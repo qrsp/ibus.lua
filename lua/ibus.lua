@@ -24,31 +24,7 @@ local function set_engine(engine)
 		return
 	end
 
-	-- Use vim.system for async execution (Neovim 0.8+)
-	if vim.system then
-		vim.system({ "ibus", "engine", engine }, {}, function(result)
-			if result.code ~= 0 then
-				vim.notify("Failed to set ibus engine: " .. engine, vim.log.levels.WARN)
-			end
-		end)
-	else
-		-- Fallback for older Neovim versions
-		vim.fn.jobstart({ "ibus", "engine", engine }, {
-			on_exit = function(_, code)
-				if code ~= 0 then
-					vim.notify("Failed to set ibus engine: " .. engine, vim.log.levels.WARN)
-				end
-			end,
-		})
-	end
-end
-
--- Delayed engine setting (for focus events)
-local function set_engine_delayed(engine, delay)
-	delay = delay or 500 -- 0.5 seconds default
-	vim.defer_fn(function()
-		set_engine(engine)
-	end, delay)
+  vim.system({ "ibus", "engine", engine }, {})
 end
 
 -- Switch to insert mode engine
@@ -77,10 +53,10 @@ function M.normal()
 	end
 end
 
--- Handle focus events (delayed to avoid conflicts with ibus)
+-- Handle focus events
 function M.focus()
 	if current_engine then
-		set_engine_delayed(current_engine)
+		set_engine(current_engine)
 	end
 end
 
