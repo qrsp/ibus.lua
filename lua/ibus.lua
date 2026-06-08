@@ -28,7 +28,7 @@ local function set_engine(engine)
 end
 
 -- Switch to insert mode engine
-function M.insert()
+function M.insert_mode()
 	if #config.insert_engines == 0 then
 		return
 	end
@@ -41,7 +41,7 @@ function M.insert()
 end
 
 -- Switch to normal mode engine
-function M.normal()
+function M.normal_mode()
 	if #config.normal_engines == 0 then
 		return
 	end
@@ -79,9 +79,9 @@ function M.toggle(mode)
 
 		-- Set initial engine based on mode
 		if mode == "i" then
-			M.insert()
+			M.insert_mode()
 		else
-			M.normal()
+			M.normal_mode()
 		end
 
 		-- Set up autocommands
@@ -89,24 +89,24 @@ function M.toggle(mode)
 
 		vim.api.nvim_create_autocmd("InsertEnter", {
 			group = augroup,
-			callback = M.insert,
+			callback = M.insert_mode,
 		})
 
 		vim.api.nvim_create_autocmd("InsertLeavePre", {
 			group = augroup,
-			callback = M.normal,
+			callback = M.normal_mode,
 		})
 
 		vim.api.nvim_create_autocmd("CmdlineEnter", {
 			group = augroup,
 			pattern = { "[/\\?]" },
-			callback = M.insert,
+			callback = M.insert_mode,
 		})
 
 		vim.api.nvim_create_autocmd("CmdlineLeave", {
 			group = augroup,
 			pattern = { "[/\\?]" },
-			callback = M.normal,
+			callback = M.normal_mode,
 		})
 
 		vim.api.nvim_create_autocmd("FocusGained", {
@@ -129,7 +129,7 @@ function M.insert_select(offset)
 		insert_engines_idx = insert_engines_idx + #config.insert_engines
 	end
 
-	M.insert()
+	M.insert_mode()
 	return ""
 end
 
@@ -144,7 +144,7 @@ function M.normal_select(offset)
 		normal_engines_idx = normal_engines_idx + #config.normal_engines
 	end
 
-	M.normal()
+	M.normal_mode()
 	return ""
 end
 
