@@ -148,6 +148,10 @@ function M.normal_select(offset)
 	return ""
 end
 
+function M.is_enabled()
+	return ibus_enabled
+end
+
 -- Update configuration
 function M.setup(opts)
 	opts = opts or {}
